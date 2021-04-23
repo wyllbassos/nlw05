@@ -4,6 +4,7 @@ import { format, parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import api from '../services/api';
 import { convertDurationToTimeString } from '../utils/convertDurationToTimeString';
+import Link from 'next/link';
 
 import styles from './home.module.scss';
 
@@ -13,7 +14,7 @@ type File = {
   duration: number;
 }
 
-type Episode = {
+export type Episode = {
   id: string;
   title: string;
   members: string;
@@ -38,10 +39,12 @@ export default function Home({ allEpisodes, latestEpisodes }: HomeProps) {
         <ul>
           {latestEpisodes.map(episode => (
             <li key={episode.id}>
-              <Image width={192} height={192} src={episode.thumbnail} alt={episode.title}/>
-              
+              <Image objectFit="cover" width={192} height={192} src={episode.thumbnail} alt={episode.title} />
+
               <div className={styles.episodeDetails}>
-                <a href="">{episode.title}</a>
+                <Link href={`/episodes/${episode.id}`}>
+                  <a >{episode.title}</a>
+                </Link>
                 <p>{episode.members}</p>
                 <span>{episode.published_at}</span>
                 <span>{episode.durationAsString}</span>
@@ -55,13 +58,58 @@ export default function Home({ allEpisodes, latestEpisodes }: HomeProps) {
         </ul>
       </section>
 
-      <section className={styles.allEpisodes}></section>
+      <section className={styles.allEpisodes}>
+        <h2>Todos episódios</h2>
+
+        <table cellPadding={0}>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Podcast</th>
+              <th>Integrantes</th>
+              <th>Data</th>
+              <th>Duração</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {allEpisodes.map(episode => {
+              return (
+                <tr key={episode.id}>
+                  <td style={{ width: 72 }}>
+                    <Image
+                      width={120}
+                      height={120}
+                      src={episode.thumbnail}
+                      alt={episode.title}
+                      objectFit="cover"
+                    />
+                  </td>
+                  <td>
+                    <Link href={`/episodes/${episode.id}`}>
+                      <a>{episode.title}</a>
+                    </Link>
+                  </td>
+                  <td>{episode.members}</td>
+                  <td style={{ width: 100 }}>{episode.published_at}</td>
+                  <td>{episode.durationAsString}</td>
+                  <td>
+                    <button type="button">
+                      <img src="/play-green.svg" alt="Tocar episódio" />
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </section>
     </div>
   )
 }
 
 // export async function getServerSideProps() {
-  export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const { data } = await api('episodes', {
     params: {
       _limit: 12,
