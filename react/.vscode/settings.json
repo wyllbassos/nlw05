@@ -1,0 +1,12 @@
+{
+	"git.enableSmartCommit": true,
+	"git.autofetch": true,
+	"workbench.colorTheme": "Omni",
+	"workbench.iconTheme": "material-icon-theme",
+	"editor.formatOnSave": true,
+	"editor.formatOnPaste": true,
+	"editor.insertSpaces": false,
+	"editor.wordWrap": "wordWrapColumn",
+	"editor.wrappingIndent": "same",
+	"editor.wordWrapColumn": 80
+}

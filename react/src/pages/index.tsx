@@ -7,8 +7,7 @@ import { convertDurationToTimeString } from '../utils/convertDurationToTimeStrin
 import Link from 'next/link';
 
 import styles from './home.module.scss';
-import { PlayerContext } from '../contexts/PlayerContext';
-import { useContext } from 'react';
+import { usePlayer } from '../contexts/PlayerContext';
 
 type File = {
   url: string;
@@ -33,27 +32,33 @@ type HomeProps = {
 }
 
 export default function Home({ allEpisodes, latestEpisodes }: HomeProps) {
-  const { play } = useContext(PlayerContext);
+  const { playList, stop } = usePlayer();
+
+  const episodeList = [...latestEpisodes, ...allEpisodes];
+
+  function handleEnterEpisode(episode: Episode) {
+    playList([episode], 0, false);
+  }
 
   return (
     <div className={styles.homepage}>
       <section className={styles.latestEpisodes}>
         <h2>Últimos lançamentos</h2>
         <ul>
-          {latestEpisodes.map(episode => (
+          {latestEpisodes.map((episode, index) => (
             <li key={episode.id}>
               <Image objectFit="cover" width={192} height={192} src={episode.thumbnail} alt={episode.title} />
 
               <div className={styles.episodeDetails}>
                 <Link href={`/episodes/${episode.id}`}>
-                  <a >{episode.title}</a>
+                  <a onClick={() => handleEnterEpisode(episode)}>{episode.title}</a>
                 </Link>
                 <p>{episode.members}</p>
                 <span>{episode.published_at}</span>
                 <span>{episode.durationAsString}</span>
               </div>
 
-              <button type="button" onClick={() => play(episode)}>
+              <button type="button" onClick={() => playList(episodeList, index)}>
                 <img src="play-green.svg" alt="Tocar Episodio" />
               </button>
             </li>
@@ -76,7 +81,7 @@ export default function Home({ allEpisodes, latestEpisodes }: HomeProps) {
             </tr>
           </thead>
           <tbody>
-            {allEpisodes.map(episode => {
+            {allEpisodes.map((episode, index) => {
               return (
                 <tr key={episode.id}>
                   <td style={{ width: 72 }}>
@@ -90,14 +95,14 @@ export default function Home({ allEpisodes, latestEpisodes }: HomeProps) {
                   </td>
                   <td>
                     <Link href={`/episodes/${episode.id}`}>
-                      <a>{episode.title}</a>
+                      <a onClick={() => handleEnterEpisode(episode)}>{episode.title}</a>
                     </Link>
                   </td>
                   <td>{episode.members}</td>
                   <td style={{ width: 100 }}>{episode.published_at}</td>
                   <td>{episode.durationAsString}</td>
                   <td>
-                    <button type="button">
+                    <button type="button" onClick={() => playList(episodeList, index + latestEpisodes.length)}>
                       <img src="/play-green.svg" alt="Tocar episódio" />
                     </button>
                   </td>
@@ -147,3 +152,5 @@ export const getStaticProps: GetStaticProps = async () => {
 // missão espacial
 // Em Busca do Proximo Nivel
 // Astronautas
+// Universo Infinito
+// Missão cumprida

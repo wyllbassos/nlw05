@@ -9,18 +9,21 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import styles from './episode.module.scss';
+import { usePlayer } from '../../contexts/PlayerContext';
 
 type EpisodePageProps = {
   episode: EpisodeProps;
 }
 
 export default function Episode({ episode }: EpisodePageProps) {
+  const { play, stop } = usePlayer();
+
   const router = useRouter();
   return (
     <div className={styles.episode}>
       <div className={styles.thumbnailContainer}>
         <Link href="/">
-          <button type="button">
+          <button type="button" onClick={stop}>
             <img src="/arrow-left.svg" alt="Voltar" />
           </button>
         </Link>
@@ -30,7 +33,7 @@ export default function Episode({ episode }: EpisodePageProps) {
           src={episode.thumbnail}
           objectFit="cover"
         />
-        <button type="button">
+        <button type="button" onClick={() => play(episode)}>
           <img src="/play.svg" alt="Tocar episódio"/>
         </button>
       </div>
