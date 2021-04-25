@@ -142,4 +142,5 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 // missão espacial
-//Em Busca do Proximo Nivel
+// Em Busca do Proximo Nivel
+// Astronautas
